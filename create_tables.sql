@@ -26,7 +26,7 @@ CREATE TABLE `search_engine`.`page`(
 CONSTRAINT PK_PAGE PRIMARY KEY (`id`),
 KEY `FK_PAGE_site_id_idx` (`site_id`),
 KEY `page_path_idx` (`path`(100)),
-CONSTRAINT `FK_PAGE_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+CONSTRAINT `FK_PAGE_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
  ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 CREATE TABLE `search_engine`.`lemma`(
@@ -36,7 +36,7 @@ CREATE TABLE `search_engine`.`lemma`(
 `frequency` INT NOT NULL, 
 CONSTRAINT PK_LEMMA PRIMARY KEY (`id`),
 KEY `FK_LEMMA_site_id_idx` (`site_id`),
-CONSTRAINT `FK_LEMMA_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+CONSTRAINT `FK_LEMMA_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
  );
 
 CREATE TABLE `search_engine`.`index`(
@@ -46,9 +46,9 @@ CREATE TABLE `search_engine`.`index`(
 `rank` FLOAT NOT NULL,
 CONSTRAINT PK_INDEX PRIMARY KEY (`id`),
 KEY `FK_INDEX_page_id_idx` (`page_id`),
-CONSTRAINT `FK_INDEX_page_id` FOREIGN KEY (`page_id`) REFERENCES `page` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+CONSTRAINT `FK_INDEX_page_id` FOREIGN KEY (`page_id`) REFERENCES `page` (`id`),
 KEY `FK_INDEX_lemma_id_idx` (`lemma_id`),
-CONSTRAINT `FK_INDEX_lemma_id` FOREIGN KEY (`lemma_id`) REFERENCES `lemma` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+CONSTRAINT `FK_INDEX_lemma_id` FOREIGN KEY (`lemma_id`) REFERENCES `lemma` (`id`)
 );
 
 insert into `search_engine`.`field` ( `name`, `selector`, `weight`) value('title', 'title', 1);
