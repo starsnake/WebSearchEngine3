@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface PageRepository extends JpaRepository<Page, Integer> {
-    Page findPageByPathAndSite(String url, Site site);
+    Optional<Page> findPageByPathAndSite(String url, Site site);
     long countBySite(Site site);
 
     //    SELECT page.id, count(page.id) AS count_id, sum(`index`.rank) AS sum_rank, sum(lemma.frequency) AS sum_frequency

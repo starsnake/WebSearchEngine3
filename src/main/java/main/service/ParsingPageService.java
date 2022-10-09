@@ -100,7 +100,8 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public boolean isExistingPage(Site site, String url){
-        return pageRepository.findPageByPathAndSite(url, site) != null;
+        Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
+        return !pageOptional.isEmpty();
     }
 
     @Override

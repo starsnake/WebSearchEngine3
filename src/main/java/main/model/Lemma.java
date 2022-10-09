@@ -2,6 +2,7 @@ package main.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 //            statement.execute("CREATE TABLE lemmas(" +
@@ -11,8 +12,7 @@ import java.util.List;
 //                    "PRIMARY KEY(id))");
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "lemma")
 public class Lemma {
@@ -21,7 +21,7 @@ public class Lemma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
     private Site site;
 
@@ -30,6 +30,10 @@ public class Lemma {
 
     @Column(name = "frequency", nullable = false)
     private int frequency;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "lemma_id")
+    private List<Index> indexList = new ArrayList<>();
 
     public Lemma(Site site, String lemma, int frequency) {
         this.site = site;

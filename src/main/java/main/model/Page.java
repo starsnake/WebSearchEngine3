@@ -10,6 +10,7 @@ package main.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +22,7 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "site_id", referencedColumnName = "id",nullable = false)
     private Site site;
 
@@ -34,8 +35,9 @@ public class Page {
     @Column(name = "content", columnDefinition = "MEDIUMTEXT NOT NULL")
     private String content;
 
-    @Column(name = "sum_rank")
-    transient private float sumRank;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "page_id")
+    private List<Index> indexList = new ArrayList<>();
 
     public Page(Site site, String path) {
         this.site = site;

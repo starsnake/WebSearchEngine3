@@ -6,6 +6,7 @@ import main.model.TypeSiteIndexingStatus;
 import main.service.IParsingPageService;
 import main.tools.Tools;
 
+import java.util.Date;
 import java.util.concurrent.ForkJoinPool;
 
 public class StartParsing implements Runnable {
@@ -20,6 +21,7 @@ public class StartParsing implements Runnable {
     @Override
     public void run() {
         long start = System.currentTimeMillis();
+        System.out.println("Start parsing sites " + new Date());
         for(Site site : parsingPageService.getAllSites()){
             parsingPageService.deleteSite(site);
         }
@@ -29,7 +31,6 @@ public class StartParsing implements Runnable {
             start = System.currentTimeMillis();
             ParsingPage parsingPage = new ParsingPage(parsingPageService, site, connectConfig);
             new ForkJoinPool().invoke(parsingPage);
-
             System.out.println("Duration of processing site " + site.getUrl() + ": " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
             System.out.println("Links - " + parsingPage.getListSet());
         }

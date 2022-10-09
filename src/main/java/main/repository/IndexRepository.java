@@ -3,6 +3,7 @@ package main.repository;
 import main.model.Index;
 import main.model.Lemma;
 import main.model.Page;
+import main.model.Site;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

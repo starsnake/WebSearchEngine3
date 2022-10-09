@@ -2,6 +2,7 @@ package main.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +39,14 @@ public class Site {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "site_id")
+    private List<Page> indexPage = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "site_id")
+    private List<Lemma> indexLemma = new ArrayList<>();
 
     public Site(String url, String name) {
         this.url = url;
