@@ -120,6 +120,7 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public void deleteSite(Site site) {
+//        pageRepository.deleteBySite(site);
         siteRepository.delete(site);
     }
     @Override

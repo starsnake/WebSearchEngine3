@@ -29,12 +29,12 @@ public class Index {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "page_id") //, referencedColumnName = "id", nullable = false)
     private Page page;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "lemma_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "lemma_id") //, referencedColumnName = "id", nullable = false)
     private Lemma lemma;
 
     @Column(name = "`rank`", columnDefinition = "FLOAT NOT NULL")

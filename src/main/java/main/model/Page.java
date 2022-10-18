@@ -22,8 +22,13 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "site_id", referencedColumnName = "id",nullable = false)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "index", joinColumns = {@JoinColumn(name = "page_id")},
+    inverseJoinColumns = {@JoinColumn(name = "lemma_id")})
+    private List<Lemma> lemmaList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "site_id") //, referencedColumnName = "id",nullable = false)
     private Site site;
 
     @Column(name = "path", columnDefinition = "TEXT NOT NULL")

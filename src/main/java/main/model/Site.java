@@ -40,12 +40,12 @@ public class Site {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "site_id")
+    @OneToMany(mappedBy = "site",cascade = CascadeType.ALL)
+//    @JoinColumn(name = "site_id")
     private List<Page> indexPage = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "site_id")
+    @OneToMany(mappedBy = "site",cascade = CascadeType.ALL)
+//    @JoinColumn(name = "site_id")
     private List<Lemma> indexLemma = new ArrayList<>();
 
     public Site(String url, String name) {

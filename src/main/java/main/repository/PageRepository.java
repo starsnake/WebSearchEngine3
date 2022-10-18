@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface PageRepository extends JpaRepository<Page, Integer> {
     Optional<Page> findPageByPathAndSite(String url, Site site);
     long countBySite(Site site);
+    void deleteBySite(Site site);
 
     //    SELECT page.id, count(page.id) AS count_id, sum(`index`.rank) AS sum_rank, sum(lemma.frequency) AS sum_frequency
 //    FROM page JOIN lemma JOIN `index` ON lemma.id = `index`.lemma_id ON page.id = `index`.page_id
