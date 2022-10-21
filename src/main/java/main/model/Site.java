@@ -25,7 +25,7 @@ public class Site {
     private int id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('INDEXING', 'INDEXED', 'FAILED')")
     private TypeSiteIndexingStatus status;
 
     @Column(name = "status_time", columnDefinition = "DATETIME NOT NULL")
@@ -40,12 +40,10 @@ public class Site {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "site",cascade = CascadeType.ALL)
-//    @JoinColumn(name = "site_id")
+    @OneToMany(mappedBy = "site",cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Page> indexPage = new ArrayList<>();
 
-    @OneToMany(mappedBy = "site",cascade = CascadeType.ALL)
-//    @JoinColumn(name = "site_id")
+    @OneToMany(mappedBy = "site",cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Lemma> indexLemma = new ArrayList<>();
 
     public Site(String url, String name) {

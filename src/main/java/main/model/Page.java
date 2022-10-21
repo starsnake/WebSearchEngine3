@@ -22,26 +22,20 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "index", joinColumns = {@JoinColumn(name = "page_id")},
-    inverseJoinColumns = {@JoinColumn(name = "lemma_id")})
-    private List<Lemma> lemmaList;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id") //, referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "site_id", referencedColumnName = "id",nullable = false)
     private Site site;
 
-    @Column(name = "path", columnDefinition = "TEXT NOT NULL")
+    @Column(name = "path", columnDefinition = "TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
     private String path;
 
     @Column(name = "code", nullable = false)
     private int code;
 
-    @Column(name = "content", columnDefinition = "MEDIUMTEXT NOT NULL")
+    @Column(name = "content", columnDefinition = "MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "page_id")
+    @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
     private List<Index> indexList = new ArrayList<>();
 
     public Page(Site site, String path) {

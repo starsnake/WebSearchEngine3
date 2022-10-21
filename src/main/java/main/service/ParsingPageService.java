@@ -152,6 +152,7 @@ public class ParsingPageService implements IParsingPageService{
         return !list.isEmpty();
     }
 
+    @Transactional
     @Override
     public synchronized Page savePage(Page page){
         if(!isExistingPage(page.getSite(), page.getPath())){
