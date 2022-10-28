@@ -27,19 +27,20 @@ public class RuMorphology {
         return Arrays.stream((text).toLowerCase()
                         .replaceAll("\\p{Punct}", "")
                         .replaceAll("[^а-яё ]", "")
+                        .replaceAll("ё", "е")
                         .split("\\s"))
                 .filter(word -> word.length() != 0)
                 .collect(Collectors.toList());
     }
 
-    private static boolean isСontain(String s){
-        return s.contains("|n СОЮЗ")
-                || s.contains("|l ПРЕДЛ")
-                || s.contains("|f МС-П")
-                || s.contains("|o МЕЖД")
-                || s.contains("|e МС")
-                || s.contains("|Z")
-                || s.contains("|B");
+    private static boolean isContain(String s){
+        return !s.contains("|n СОЮЗ")
+                && !s.contains("|l ПРЕДЛ")
+                && !s.contains("|f МС-П")
+                && !s.contains("|o МЕЖД")
+                && !s.contains("|e МС")
+                && !s.contains("|Z")
+                && !s.contains("|B");
     }
 
     public static HashMap<String, Integer> getLem(String text) throws IOException {
@@ -50,7 +51,7 @@ public class RuMorphology {
                 continue;
             }
             String s = luceneMorph.getMorphInfo(str).get(0);
-            if(!isСontain(s)) {
+            if(isContain(s)) {
                 String key = luceneMorph.getNormalForms(str).get(0); //.getMorphInfo()
                 if(map.containsKey(key)) {
                     map.put(key, map.get(key) + 1);
@@ -70,29 +71,29 @@ public class RuMorphology {
             if(str.isEmpty() || str.isBlank()) {
                 continue;
             }
-            if(!isСontain(luceneMorph.getMorphInfo(str).get(0))){
+            if(isContain(luceneMorph.getMorphInfo(str).get(0))){
                 lems.add(luceneMorph.getNormalForms(str).get(0));
             }
         }
         return lems.stream().toList();
     }
     public static String getCorrectQuery(String query, List<Lemma> lemmaList){
-        String retQuery = "";
+        StringBuilder retQuery = new StringBuilder();
         List<String> list = splitText(query);
         for(String str : list){
             if(str.isEmpty() || str.isBlank()) {
                 continue;
             }
-            if(!isСontain(luceneMorph.getMorphInfo(str).get(0))){
+            if(isContain(luceneMorph.getMorphInfo(str).get(0))){
                 String world = luceneMorph.getMorphInfo(str).get(0);
                 for(Lemma lemma : lemmaList){
                     if(lemma.getLemma().equals(world)) {
-                        retQuery += retQuery.isEmpty() ? str : " " + str;
+                        retQuery.append((retQuery.length() == 0) ? str : " " + str);
                     }
                 }
             }
         }
-        return retQuery;
+        return retQuery.toString();
     }
 
 //    public static List<String> getSourceLem(String text, List<String> lemmaList){

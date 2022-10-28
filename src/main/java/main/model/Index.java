@@ -16,6 +16,7 @@ package main.model;
 //                "ON DELETE NO ACTION ON UPDATE NO ACTION)");
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -30,11 +31,13 @@ public class Index {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "page_id") //, referencedColumnName = "id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
     private Page page;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lemma_id") //, referencedColumnName = "id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "lemma_id", referencedColumnName = "id", nullable = false)
     private Lemma lemma;
 
     @Column(name = "`rank`", columnDefinition = "FLOAT NOT NULL")

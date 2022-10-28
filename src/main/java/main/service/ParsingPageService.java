@@ -63,22 +63,14 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     @Transactional
-    public synchronized void saveParsing(Page page, Site site, HashMap<String, Float> ranks){
-        List<String> list = ranks.keySet().stream().toList();
-        HashMap<String, Lemma> lemmaMap = new HashMap<>();
+    public void saveParsing(Page page, Site site, HashMap<String, Float> ranks){
         List<Index> indexList = new ArrayList<>();
+        HashMap<String, Lemma> lemmaMap = new HashMap<>();
+        List<String> list = ranks.keySet().stream().toList();
         for (String key : list) {
             lemmaMap.put(key, new Lemma(site, key, 1));
         }
-        List<Lemma> findLemma = lemmaRepository.findBySiteAndLemmaIn(site, list);
-
-        for (Lemma lemma : findLemma) {
-            if (lemmaMap.containsKey(lemma.getLemma())) {
-                lemma.setFrequency(lemma.getFrequency() + 1);
-                lemmaMap.replace(lemma.getLemma(), lemma);
-            }
-        }
-        findLemma = lemmaRepository.saveAll(lemmaMap.values());
+        List<Lemma> findLemma = saveLemmas(site, list, lemmaMap);
         lemmaRepository.flush();
         for(Lemma lemma : findLemma){
             Index index = new Index(page, lemma, ranks.get(lemma.getLemma()));
@@ -86,6 +78,29 @@ public class ParsingPageService implements IParsingPageService{
         }
         indexRepository.saveAll(indexList);
     }
+
+    private synchronized List<Lemma> saveLemmas(Site site, List<String> list, HashMap<String, Lemma> lemmaMap){
+        List<Lemma> findLemma = lemmaRepository.findBySiteAndLemmaIn(site, list);
+        for (Lemma lemma : findLemma) {
+            if (lemmaMap.containsKey(lemma.getLemma())) {
+                lemma.setFrequency(lemma.getFrequency() + 1);
+                lemmaMap.replace(lemma.getLemma(), lemma);
+            }
+        }
+//        return lemmaMap.values().stream().toList();
+        return lemmaRepository.saveAll(lemmaMap.values());
+    }
+    @Transactional
+    private synchronized Lemma insertLemma(Lemma lemma){
+        Optional<Lemma> lemmaOptional = lemmaRepository.findBySiteAndLemma(lemma.getSite(), lemma.getLemma());
+        if(lemmaOptional.isPresent()){
+            Lemma findLemma = lemmaOptional.get();
+            findLemma.setFrequency(findLemma.getFrequency() + 1);
+            return lemmaRepository.save(findLemma);
+        }
+        return lemmaRepository.save(lemma);
+    }
+
 
 //    @Override
 //    @Transactional
@@ -101,7 +116,7 @@ public class ParsingPageService implements IParsingPageService{
     @Override
     public boolean isExistingPage(Site site, String url){
         Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
-        return !pageOptional.isEmpty();
+        return pageOptional.isPresent();
     }
 
     @Override
@@ -114,7 +129,7 @@ public class ParsingPageService implements IParsingPageService{
     @Override
     public List<Site> getAllSites() {
         List<Site> list = new ArrayList<>();
-        siteRepository.findAll().forEach(p->list.add(p));
+        list.addAll(siteRepository.findAll());
         return list;
     }
 
@@ -152,7 +167,6 @@ public class ParsingPageService implements IParsingPageService{
         return !list.isEmpty();
     }
 
-    @Transactional
     @Override
     public synchronized Page savePage(Page page){
         if(!isExistingPage(page.getSite(), page.getPath())){
@@ -221,8 +235,7 @@ public class ParsingPageService implements IParsingPageService{
         if(pageOptional.isEmpty()){
             return new Page();
         }
-        Page page = pageOptional.get();
-        return page;
+        return pageOptional.get();
     }
 
     @Override

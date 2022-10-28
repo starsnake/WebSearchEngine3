@@ -53,14 +53,14 @@ public class ParsingPage extends RecursiveAction {
         if (url == null || parsingPageService.isSiteFailed(site)) {
             return;
         }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         Page page = savePage();
         if(page == null || page.getCode() != 200){
             return;
+        }
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
         Document doc = Jsoup.parse(page.getContent());
         HashMap<String, Float> ranks = getRankLems(doc, listField);
@@ -74,9 +74,19 @@ public class ParsingPage extends RecursiveAction {
                 continue;
             }
             str = str.replaceFirst(site.getUrl(), "");
+//            if(!parsingPageService.isExistingPage(site, str)){
+//                ParsingPage task = new ParsingPage(listSet, parsingPageService,
+//                        site, str, connectConfig);
+//                tasks.add(task);
+//                task.fork();
+//            }
+//
             if (listSet.add(str)) {
-                tasks.add(new ParsingPage(listSet, parsingPageService,
-                        site, str, connectConfig));
+//                ParsingPage task = new ParsingPage(listSet, parsingPageService,
+//                        site, str, connectConfig);
+                        tasks.add(new ParsingPage(listSet, parsingPageService,
+                                site, str, connectConfig));
+//                        task.fork();
             }
         }
         invokeAll(tasks);
@@ -109,7 +119,7 @@ public class ParsingPage extends RecursiveAction {
         }
         if(doc != null) {
             Connection.Response resp = doc.connection().response();
-            if (!resp.contentType().startsWith("text")) {
+            if (!Objects.requireNonNull(resp.contentType()).startsWith("text")) {
                 return null;
             }
         }
@@ -119,7 +129,7 @@ public class ParsingPage extends RecursiveAction {
             page.setContent("");
         }
         else {
-            page.setContent(doc.html());
+            page.setContent(Objects.requireNonNull(doc).html());
         }
         return parsingPageService.savePage(page);
     }
@@ -152,7 +162,7 @@ public class ParsingPage extends RecursiveAction {
         for(String str : keys){
             HashMap<String, Float> rankItems = getRankLems(doc.select(str).text(), listField.get(str));
             rankItems.forEach((key, value)->rankLemmas
-                    .merge(key, value,(oldValue, newValue)->{return oldValue + newValue;}));
+                    .merge(key, value, Float::sum));
         }
         return rankLemmas;
     }

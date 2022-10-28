@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LemmaRepository extends JpaRepository<Lemma, Integer> {
-    Lemma findBySiteAndLemma(Site site, String nameLemma);
+    Optional<Lemma> findBySiteAndLemma(Site site, String nameLemma);
     long countBySite(Site site);
 
     List<Lemma> findBySiteAndLemmaIn(Site site, List<String> lemmas);

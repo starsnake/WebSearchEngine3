@@ -1,7 +1,6 @@
 package main.service;
 
 import main.model.*;
-import org.springframework.data.repository.query.Param;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +9,10 @@ import java.util.Optional;
 public interface IParsingPageService {
     long countSites();
     long countPage();
+    long countLemma();
     long countPageBySite(Site site);
     long countLemmaBySite(Site site);
-    long countLemma();
+
     HashMap<String, Float> getAllFields();
     boolean isExistingPage(Site site, String url);
     boolean isIndexing();
@@ -20,8 +20,6 @@ public interface IParsingPageService {
     List<Site> getAllSites();
     Site getSite(String url);
     void saveParsing(Page page, Site site, HashMap<String, Float> ranks);
-//    List<Lemma> saveLemma(Site site, List<String> list);
-//    void saveIndexies(Page page, List<Lemma> lemmaList, HashMap<String, Float> ranks);
     void deleteSite(Site site);
     Site saveSite(Site site);
     void createSitesFromConfig();

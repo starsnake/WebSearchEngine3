@@ -1,6 +1,7 @@
 package main.model;
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +22,18 @@ public class Lemma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
     private Site site;
 
-    @Column(name = "lemma", length = 255, nullable = false)
+    @Column(name = "lemma", nullable = false)
     private String lemma;
 
     @Column(name = "frequency", nullable = false)
     private int frequency;
 
-    @OneToMany(mappedBy = "lemma", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lemma", cascade = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
     private List<Index> indexList = new ArrayList<>();
 
     public Lemma(Site site, String lemma, int frequency) {
@@ -39,5 +41,4 @@ public class Lemma {
         this.lemma = lemma;
         this.frequency = frequency;
     }
-
 }

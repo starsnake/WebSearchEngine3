@@ -9,21 +9,21 @@ package main.model;
 //        "UNIQUE KEY name_date(path(100)))");
 
 import lombok.*;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "page")
+@Table(name = "page") //, indexes = @javax.persistence.Index(columnList = "path", name = "idx_page_path"))
 public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
     private Site site;
 
     @Column(name = "path", columnDefinition = "TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
@@ -35,8 +35,15 @@ public class Page {
     @Column(name = "content", columnDefinition = "MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
     private String content;
 
-    @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
-    private List<Index> indexList = new ArrayList<>();
+//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "`index`",
+//            joinColumns = {@JoinColumn(name = "page_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "lemma_id")})
+//    private List<Lemma> lemmaList;
+
+
+    @OneToMany(mappedBy = "page", cascade = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Index> indexList;
 
     public Page(Site site, String path) {
         this.site = site;

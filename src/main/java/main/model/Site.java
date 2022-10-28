@@ -2,7 +2,6 @@ package main.model;
 
 import lombok.*;
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +39,11 @@ public class Site {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "site",cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Page> indexPage = new ArrayList<>();
+    @OneToMany(mappedBy = "site", cascade  = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Page> indexPage;
 
-    @OneToMany(mappedBy = "site",cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Lemma> indexLemma = new ArrayList<>();
+    @OneToMany(mappedBy = "site", cascade  = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Lemma> indexLemma;
 
     public Site(String url, String name) {
         this.url = url;
