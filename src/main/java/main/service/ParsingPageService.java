@@ -90,28 +90,6 @@ public class ParsingPageService implements IParsingPageService{
 //        return lemmaMap.values().stream().toList();
         return lemmaRepository.saveAll(lemmaMap.values());
     }
-    @Transactional
-    private synchronized Lemma insertLemma(Lemma lemma){
-        Optional<Lemma> lemmaOptional = lemmaRepository.findBySiteAndLemma(lemma.getSite(), lemma.getLemma());
-        if(lemmaOptional.isPresent()){
-            Lemma findLemma = lemmaOptional.get();
-            findLemma.setFrequency(findLemma.getFrequency() + 1);
-            return lemmaRepository.save(findLemma);
-        }
-        return lemmaRepository.save(lemma);
-    }
-
-
-//    @Override
-//    @Transactional
-//    public void saveIndexies(Page page, List<Lemma> lemmaList, HashMap<String, Float> ranks) {
-//        List<Index> indexList = new ArrayList<>();
-//        for(Lemma lemma : lemmaList){
-//            Index index = new Index(page, lemma, ranks.get(lemma.getLemma()));
-//            indexList.add(index);
-//        }
-//        indexRepository.saveAll(indexList);
-//    }
 
     @Override
     public boolean isExistingPage(Site site, String url){
@@ -128,9 +106,7 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public List<Site> getAllSites() {
-        List<Site> list = new ArrayList<>();
-        list.addAll(siteRepository.findAll());
-        return list;
+        return new ArrayList<>(siteRepository.findAll());
     }
 
     @Override
