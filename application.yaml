@@ -5,7 +5,7 @@ spring:
     username: root
     password: Andrey1965
   jpa:
-    show_sql: false
+    show_sql: true
     hibernate:
       ddl-auto: update
     properties:

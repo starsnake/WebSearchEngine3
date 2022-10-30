@@ -22,9 +22,7 @@ public class StartParsing implements Runnable {
     public void run() {
         long start = System.currentTimeMillis();
         System.out.println("Start parsing sites " + new Date());
-        for(Site site : parsingPageService.getAllSites()){
-            parsingPageService.deleteSite(site);
-        }
+        parsingPageService.deleteAllSites();
         System.out.println("Duration of deleting: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
         parsingPageService.createSitesFromConfig();
         for (Site site : parsingPageService.getAllSites()) {

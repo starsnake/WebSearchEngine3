@@ -39,10 +39,10 @@ public class Site {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "site", cascade  = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "site", cascade  = CascadeType.REMOVE, orphanRemoval = true)
     private List<Page> indexPage;
 
-    @OneToMany(mappedBy = "site", cascade  = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "site", cascade  = CascadeType.REMOVE, orphanRemoval = true)
     private List<Lemma> indexLemma;
 
     public Site(String url, String name) {

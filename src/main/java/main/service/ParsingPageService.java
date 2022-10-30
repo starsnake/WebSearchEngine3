@@ -111,9 +111,15 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public void deleteSite(Site site) {
-//        pageRepository.deleteBySite(site);
         siteRepository.delete(site);
     }
+
+    @Override
+    public void deleteAllSites() {
+//        indexRepository.deleteAll();
+        siteRepository.deleteAll();
+    }
+
     @Override
     public void createSitesFromConfig() {
         for(Site site : siteConfig.getSites()) {

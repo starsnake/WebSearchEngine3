@@ -21,6 +21,7 @@ public interface IParsingPageService {
     Site getSite(String url);
     void saveParsing(Page page, Site site, HashMap<String, Float> ranks);
     void deleteSite(Site site);
+    void deleteAllSites();
     Site saveSite(Site site);
     void createSitesFromConfig();
     void setTypeIndexing(Site site, TypeSiteIndexingStatus typeStatus);

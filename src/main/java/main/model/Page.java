@@ -42,7 +42,7 @@ public class Page {
 //    private List<Lemma> lemmaList;
 
 
-    @OneToMany(mappedBy = "page", cascade = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "page", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Index> indexList;
 
     public Page(Site site, String path) {
