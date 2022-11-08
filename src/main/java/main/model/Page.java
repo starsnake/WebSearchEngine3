@@ -9,6 +9,8 @@ package main.model;
 //        "UNIQUE KEY name_date(path(100)))");
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,6 +25,7 @@ public class Page {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
     private Site site;
 
@@ -42,7 +45,7 @@ public class Page {
 //    private List<Lemma> lemmaList;
 
 
-    @OneToMany(mappedBy = "page", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "page", cascade = CascadeType.MERGE)
     private List<Index> indexList;
 
     public Page(Site site, String path) {

@@ -80,12 +80,14 @@ public class ParsingPage extends RecursiveAction {
 //                tasks.add(task);
 //                task.fork();
 //            }
-//
+
             if (listSet.add(str)) {
 //                ParsingPage task = new ParsingPage(listSet, parsingPageService,
 //                        site, str, connectConfig);
+
                         tasks.add(new ParsingPage(listSet, parsingPageService,
                                 site, str, connectConfig));
+
 //                        task.fork();
             }
         }

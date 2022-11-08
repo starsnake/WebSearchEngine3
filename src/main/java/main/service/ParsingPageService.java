@@ -4,6 +4,7 @@ import main.config.SiteConfig;
 import main.model.*;
 import main.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,8 +117,11 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public void deleteAllSites() {
-//        indexRepository.deleteAll();
-        siteRepository.deleteAll();
+
+        indexRepository.deleteAllInBatch();
+        pageRepository.deleteAllInBatch();
+        lemmaRepository.deleteAllInBatch();
+        siteRepository.deleteAllInBatch();
     }
 
     @Override

@@ -16,6 +16,8 @@ package main.model;
 //                "ON DELETE NO ACTION ON UPDATE NO ACTION)");
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -35,7 +37,7 @@ public class Index {
     @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
     private Page page;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //, cascade = CascadeType.REMOVE)
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "lemma_id", referencedColumnName = "id", nullable = false)
     private Lemma lemma;

@@ -1,6 +1,8 @@
 package main.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,7 +34,7 @@ public class Lemma {
     @Column(name = "frequency", nullable = false)
     private int frequency;
 
-    @OneToMany(mappedBy = "lemma", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "lemma", cascade = CascadeType.MERGE)
     private List<Index> indexList;
 
     public Lemma(Site site, String lemma, int frequency) {
