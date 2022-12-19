@@ -1,8 +1,9 @@
 spring:
   datasource:
-    maxActive: 10
-    url: jdbc:mysql://localhost:3306/search_engine
-    username: root
+#    maxActive: 10
+#    url: jdbc:mysql://localhost:3306/search_engine
+    url: jdbc:postgresql://localhost:5432/search_engine
+    username: postgres
     password: Andrey1965
   jpa:
     show_sql: false
@@ -10,7 +11,8 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+#        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     open-in-view: false
     #        dialect: org.hibernate.dialect.MySQL5Dialect

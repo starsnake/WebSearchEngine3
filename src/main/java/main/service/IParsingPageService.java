@@ -36,6 +36,7 @@ public interface IParsingPageService {
                           int offset);
     Page getPageById(int id);
     Optional<Site> getSiteById(int id);
+    void deleteOnePage(Site site, String siteUrl);
 
     int countSearchPage(List<String> lemmaList, int countLemma, String siteUrl);
 
@@ -44,4 +45,6 @@ public interface IParsingPageService {
                             String siteUrl,
                             int limit,
                             int offset);
-    }
+    Page findPageByPathAndSite(String url, Site site);
+
+}

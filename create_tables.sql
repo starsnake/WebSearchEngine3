@@ -1,56 +1,90 @@
-SET character_set_client = utf8mb4;
-CREATE TABLE `search_engine`.`field` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `selector` varchar(255) DEFAULT NULL,
-  `weight` float NOT NULL,
-  CONSTRAINT PK_FIELD PRIMARY KEY (`id`)
+BEGIN;
+
+
+CREATE TABLE IF NOT EXISTS public.field
+(
+    id integer NOT NULL DEFAULT nextval('field_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    selector character varying(255) COLLATE pg_catalog."default",
+    weight double precision NOT NULL,
+    CONSTRAINT field_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE `search_engine`.`site`(
-`id` INT NOT NULL AUTO_INCREMENT,
-`status` ENUM('INDEXING', 'INDEXED', 'FAILED') NOT NULL,
-`status_time` DATETIME NOT NULL,
-`last_error` TEXT,
-`url` VARCHAR(255) NOT NULL,
-`name` VARCHAR(255) NOT NULL, 
-CONSTRAINT PK_SITE PRIMARY KEY (`id`)
- );
-
-CREATE TABLE `search_engine`.`page`(
-`id` INT NOT NULL AUTO_INCREMENT,
-`site_id` INT NOT NULL,
-`path` TEXT NOT NULL,
-`code` INT NOT NULL,
-`content` MEDIUMTEXT NOT NULL,
-CONSTRAINT PK_PAGE PRIMARY KEY (`id`),
-KEY `FK_PAGE_site_id_idx` (`site_id`),
-KEY `page_path_idx` (`path`(100)),
-CONSTRAINT `FK_PAGE_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
- ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
-
-CREATE TABLE `search_engine`.`lemma`(
-`id` INT NOT NULL AUTO_INCREMENT,
-`site_id` INT NOT NULL,
-`lemma` VARCHAR(255) NOT NULL,
-`frequency` INT NOT NULL, 
-CONSTRAINT PK_LEMMA PRIMARY KEY (`id`),
-KEY `FK_LEMMA_site_id_idx` (`site_id`),
-CONSTRAINT `FK_LEMMA_site_id` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
- );
-
-CREATE TABLE `search_engine`.`index`(
-`id` INT NOT NULL AUTO_INCREMENT,
-`page_id` INT NOT NULL,
-`lemma_id` INT NOT NULL,
-`rank` FLOAT NOT NULL,
-CONSTRAINT PK_INDEX PRIMARY KEY (`id`),
-KEY `FK_INDEX_page_id_idx` (`page_id`),
-CONSTRAINT `FK_INDEX_page_id` FOREIGN KEY (`page_id`) REFERENCES `page` (`id`),
-KEY `FK_INDEX_lemma_id_idx` (`lemma_id`),
-CONSTRAINT `FK_INDEX_lemma_id` FOREIGN KEY (`lemma_id`) REFERENCES `lemma` (`id`)
+CREATE TABLE IF NOT EXISTS public.index
+(
+    id integer NOT NULL DEFAULT nextval('index_id_seq'::regclass),
+    rank double precision NOT NULL,
+    lemma_id integer NOT NULL,
+    page_id integer NOT NULL,
+    CONSTRAINT index_pkey PRIMARY KEY (id)
 );
 
-insert into `search_engine`.`field` ( `name`, `selector`, `weight`) value('title', 'title', 1);
-insert into `search_engine`.`field` ( `name`, `selector`, `weight`) value('body', 'body', 0.8);
+CREATE TABLE IF NOT EXISTS public.lemma
+(
+    id integer NOT NULL DEFAULT nextval('lemma_id_seq'::regclass),
+    frequency integer NOT NULL,
+    lemma character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    site_id integer NOT NULL,
+    CONSTRAINT lemma_pkey PRIMARY KEY (id)
+);
 
+CREATE TABLE IF NOT EXISTS public.page
+(
+    id integer NOT NULL DEFAULT nextval('page_id_seq'::regclass),
+    code integer NOT NULL,
+    content text COLLATE pg_catalog."default" NOT NULL,
+    path character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    site_id integer NOT NULL,
+    CONSTRAINT page_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS public.site
+(
+    id integer NOT NULL DEFAULT nextval('site_id_seq'::regclass),
+    last_error text COLLATE pg_catalog."default",
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    status character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    status_time timestamp without time zone NOT NULL,
+    url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT site_pkey PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.index
+    ADD CONSTRAINT fk_index_lemma_id FOREIGN KEY (lemma_id)
+    REFERENCES public.lemma (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS ind_index_lemma_id
+    ON public.index(lemma_id);
+
+
+ALTER TABLE IF EXISTS public.index
+    ADD CONSTRAINT fk_index_page_id FOREIGN KEY (page_id)
+    REFERENCES public.page (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS idx_index_page_id
+    ON public.index(page_id);
+
+
+ALTER TABLE IF EXISTS public.lemma
+    ADD CONSTRAINT fk_lemma_site_id FOREIGN KEY (site_id)
+    REFERENCES public.site (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS idx_lemma_site_id
+    ON public.lemma(site_id);
+
+
+ALTER TABLE IF EXISTS public.page
+    ADD CONSTRAINT fk_page_site_id FOREIGN KEY (site_id)
+    REFERENCES public.site (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS idx_page_site_id
+    ON public.page(site_id);
+
+END;
+
+INSERT INTO public.field(name, selector, weight) VALUES ('title', 'title', 1);
+INSERT INTO public.field(name, selector, weight) VALUES ('body', 'body', 0.8);

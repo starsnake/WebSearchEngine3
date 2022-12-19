@@ -1,6 +1,9 @@
 package main.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -24,10 +27,10 @@ public class Site {
     private int id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ENUM('INDEXING', 'INDEXED', 'FAILED')")
+    @Column(name = "status", nullable = false) //, columnDefinition = "ENUM('INDEXING', 'INDEXED', 'FAILED')")
     private TypeSiteIndexingStatus status;
 
-    @Column(name = "status_time", columnDefinition = "DATETIME NOT NULL")
+    @Column(name = "status_time", nullable = false) // columnDefinition = "DATETIME NOT NULL")
     private Date statusTime;
 
     @Column(name = "last_error", columnDefinition = "TEXT")
@@ -39,11 +42,13 @@ public class Site {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "site", cascade  = CascadeType.MERGE)
-    private List<Page> indexPage;
-
-    @OneToMany(mappedBy = "site", cascade  = CascadeType.MERGE)
-    private List<Lemma> indexLemma;
+//    @OneToMany(mappedBy = "site", cascade  = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<Page> indexPage;
+//
+//    @OneToMany(mappedBy = "site", cascade  = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<Lemma> indexLemma;
 
     public Site(String url, String name) {
         this.url = url;

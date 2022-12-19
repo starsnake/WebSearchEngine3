@@ -69,7 +69,7 @@ public class ManagementController {
         for(Site site : siteConfig.getSites()){
             url = url.toLowerCase().replaceFirst("www.", "");
             if(url.contains(site.getUrl().replaceFirst("www.", ""))){
-                startParsingOnePage = new StartParsingOnePage(url, connectConfig, parsingPageService);
+                startParsingOnePage = new StartParsingOnePage(site, url, connectConfig, parsingPageService);
                 new Thread(startParsingOnePage).start();
                 return ResponseEntity.ok().body(new ResponseTrue());
             }

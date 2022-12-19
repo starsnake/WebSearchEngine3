@@ -3,6 +3,7 @@ package main.service;
 import main.config.SiteConfig;
 import main.model.*;
 import main.repository.*;
+import main.tools.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
@@ -63,8 +64,8 @@ public class ParsingPageService implements IParsingPageService{
     }
 
     @Override
-    @Transactional
-    public void saveParsing(Page page, Site site, HashMap<String, Float> ranks){
+
+    public  void saveParsing(Page page, Site site, HashMap<String, Float> ranks){
         List<Index> indexList = new ArrayList<>();
         HashMap<String, Lemma> lemmaMap = new HashMap<>();
         List<String> list = ranks.keySet().stream().toList();
@@ -72,14 +73,36 @@ public class ParsingPageService implements IParsingPageService{
             lemmaMap.put(key, new Lemma(site, key, 1));
         }
         List<Lemma> findLemma = saveLemmas(site, list, lemmaMap);
-        lemmaRepository.flush();
+//        lemmaRepository.flush();
         for(Lemma lemma : findLemma){
             Index index = new Index(page, lemma, ranks.get(lemma.getLemma()));
+//            indexRepository.save(index);
             indexList.add(index);
         }
         indexRepository.saveAll(indexList);
     }
 
+    @Override
+    @Transactional
+    public synchronized void deleteOnePage(Site site, String siteUrl) {
+        if(isExistingPage(site, siteUrl)){
+            Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(siteUrl, site);
+            List<Index> indexies = indexRepository.findByPage(pageOptional.get());
+            for(Index index : indexies){
+//                index = indexRepository.getById(index.getId());
+                if(index.getLemma().getFrequency() == 1){
+                    lemmaRepository.delete(index.getLemma());
+                }
+                else if(index.getLemma().getFrequency() > 1) {
+                    index.getLemma().setFrequency(index.getLemma().getFrequency() - 1);
+                    lemmaRepository.save(index.getLemma());
+                }
+            }
+            pageRepository.delete(pageOptional.get());
+        }
+    }
+
+    @Transactional
     private synchronized List<Lemma> saveLemmas(Site site, List<String> list, HashMap<String, Lemma> lemmaMap){
         List<Lemma> findLemma = lemmaRepository.findBySiteAndLemmaIn(site, list);
         for (Lemma lemma : findLemma) {
@@ -96,6 +119,15 @@ public class ParsingPageService implements IParsingPageService{
     public boolean isExistingPage(Site site, String url){
         Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
         return pageOptional.isPresent();
+    }
+
+    @Override
+    public Page findPageByPathAndSite(String url, Site site) {
+        Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
+        if(pageOptional.isPresent()){
+            return pageOptional.get();
+        }
+        return null;
     }
 
     @Override
@@ -116,12 +148,21 @@ public class ParsingPageService implements IParsingPageService{
     }
 
     @Override
+    //@Transactional
     public void deleteAllSites() {
 
-        indexRepository.deleteAllInBatch();
-        pageRepository.deleteAllInBatch();
-        lemmaRepository.deleteAllInBatch();
+//        long start = System.currentTimeMillis();
+//        indexRepository.deleteAllInBatch();
+//        System.out.println("Duration of deleting Index: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
+//        start = System.currentTimeMillis();
+//        pageRepository.deleteAllInBatch();
+//        System.out.println("Duration of deleting Page: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
+//        start = System.currentTimeMillis();
+//        lemmaRepository.deleteAllInBatch();
+//        System.out.println("Duration of deleting lemma: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
+//        start = System.currentTimeMillis();
         siteRepository.deleteAllInBatch();
+//        System.out.println("Duration of deleting Site: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
     }
 
     @Override
@@ -154,6 +195,10 @@ public class ParsingPageService implements IParsingPageService{
     }
 
     @Override
+//    @Transactional
+//    public Page savePage(Page page){
+//            return pageRepository.save(page);
+//    }
     public synchronized Page savePage(Page page){
         if(!isExistingPage(page.getSite(), page.getPath())){
             return pageRepository.save(page);

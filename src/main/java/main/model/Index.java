@@ -32,14 +32,14 @@ public class Index {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "page_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY) //, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "page_id", foreignKey = @ForeignKey(name = "fk_index_page_id"), referencedColumnName = "id", nullable = false)
     private Page page;
 
-    @ManyToOne(fetch = FetchType.LAZY) //, cascade = CascadeType.REMOVE)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "lemma_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY) //, cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //, cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "lemma_id", foreignKey = @ForeignKey(name = "fk_index_lemma_id"), referencedColumnName = "id", nullable = false)
     private Lemma lemma;
 
     @Column(name = "`rank`", columnDefinition = "FLOAT NOT NULL")

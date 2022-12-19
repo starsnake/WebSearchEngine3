@@ -18,24 +18,26 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "page") //, indexes = @javax.persistence.Index(columnList = "path", name = "idx_page_path"))
+@Table(name = "page", indexes = @javax.persistence.Index(columnList = "path", name = "idx_page_path"))
 public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name = "fk_page_site_id"), referencedColumnName = "id", nullable = false)
     private Site site;
 
-    @Column(name = "path", columnDefinition = "TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
+//    @Column(name = "path", columnDefinition = "TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
+    @Column(name = "path", length = 500, nullable = false)
     private String path;
 
     @Column(name = "code", nullable = false)
     private int code;
 
-    @Column(name = "content", columnDefinition = "MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
+//    @Column(name = "content", columnDefinition = "MEDIUMTEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NOT NULL")
+    @Column(name = "content", columnDefinition = "TEXT NOT NULL")
     private String content;
 
 //    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -45,8 +47,9 @@ public class Page {
 //    private List<Lemma> lemmaList;
 
 
-    @OneToMany(mappedBy = "page", cascade = CascadeType.MERGE)
-    private List<Index> indexList;
+//    @OneToMany(mappedBy = "page", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<Index> indexList;
 
     public Page(Site site, String path) {
         this.site = site;

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "lemma")
+@Table(name = "lemma", indexes = @javax.persistence.Index(columnList = "lemma", name = "idx_Lemma_lemma"))
 public class Lemma {
 
     @Id
@@ -24,8 +24,8 @@ public class Lemma {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name = "fk_lemma_site_id"), nullable = false, referencedColumnName = "id") //, nullable = false)
     private Site site;
 
     @Column(name = "lemma", nullable = false)
@@ -34,8 +34,9 @@ public class Lemma {
     @Column(name = "frequency", nullable = false)
     private int frequency;
 
-    @OneToMany(mappedBy = "lemma", cascade = CascadeType.MERGE)
-    private List<Index> indexList;
+//    @OneToMany(mappedBy = "lemma", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private List<Index> indexList;
 
     public Lemma(Site site, String lemma, int frequency) {
         this.site = site;

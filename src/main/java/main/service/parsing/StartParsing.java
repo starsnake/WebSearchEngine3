@@ -27,13 +27,12 @@ public class StartParsing implements Runnable {
         parsingPageService.createSitesFromConfig();
         for (Site site : parsingPageService.getAllSites()) {
             start = System.currentTimeMillis();
-            ParsingPage parsingPage = new ParsingPage(parsingPageService, site, connectConfig);
+            ParsingPage parsingPage = new ParsingPage(parsingPageService, site, "/", connectConfig);
             new ForkJoinPool().invoke(parsingPage);
             System.out.println("Duration of processing site " + site.getUrl() + ": " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
-            System.out.println("Links - " + parsingPage.getListSet());
+            System.out.println("Links - " + parsingPageService.countPageBySite(site)); // + parsingPage.getListSet());
         }
         finishIndexing();
-
     }
     private void setStatusSites(TypeSiteIndexingStatus status) {
         for (Site site : parsingPageService.getAllSites()) {

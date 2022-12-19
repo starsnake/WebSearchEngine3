@@ -18,42 +18,42 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ParsingPage extends RecursiveAction {
-    private final ConcurrentSkipListSet<String> listSet;
+//    private final ConcurrentSkipListSet<String> listSet;
     private final ConnectConfig connectConfig;
     private final IParsingPageService parsingPageService;
     private final Site site;
     private final String url;
     private static HashMap<String, Float> listField;
 
-    public ParsingPage(ConcurrentSkipListSet<String> listSet,
+    public ParsingPage(//ConcurrentSkipListSet<String> listSet,
                        IParsingPageService parsingPageService,
                        Site site, String url,
                        ConnectConfig connectConfig) {
-        this.listSet = listSet;
+//        this.listSet = listSet;
         this.parsingPageService = parsingPageService;
         this.connectConfig = connectConfig;
         this.site = site;
         this.url = url;
     }
 
-    public ParsingPage(IParsingPageService parsingPageService,
-                       Site site,
-                       ConnectConfig connectConfig) {
-        this.parsingPageService = parsingPageService;
-        this.connectConfig = connectConfig;
-        ParsingPage.listField = parsingPageService.getAllFields();
-        this.url = "/";
-        this.site = site;
-        this.listSet = new ConcurrentSkipListSet<>();
-        listSet.add("/");
-    }
+//    public ParsingPage(IParsingPageService parsingPageService,
+//                       Site site,
+//                       ConnectConfig connectConfig) {
+//        this.parsingPageService = parsingPageService;
+//        this.connectConfig = connectConfig;
+//        ParsingPage.listField = parsingPageService.getAllFields();
+//        this.url = "/";
+//        this.site = site;
+//        this.listSet = new ConcurrentSkipListSet<>();
+//        listSet.add("/");
+//    }
 
     @Override
     protected void compute() {
         if (url == null || parsingPageService.isSiteFailed(site)) {
             return;
         }
-        Page page = savePage();
+        Page page = savePage(parsingPageService.findPageByPathAndSite(url, site));
         if(page == null || page.getCode() != 200){
             return;
         }
@@ -74,33 +74,43 @@ public class ParsingPage extends RecursiveAction {
                 continue;
             }
             str = str.replaceFirst(site.getUrl(), "");
-//            if(!parsingPageService.isExistingPage(site, str)){
-//                ParsingPage task = new ParsingPage(listSet, parsingPageService,
-//                        site, str, connectConfig);
-//                tasks.add(task);
-//                task.fork();
-//            }
-
-            if (listSet.add(str)) {
-//                ParsingPage task = new ParsingPage(listSet, parsingPageService,
-//                        site, str, connectConfig);
-
-                        tasks.add(new ParsingPage(listSet, parsingPageService,
-                                site, str, connectConfig));
-
-//                        task.fork();
+//            if(!parsingPageService.isExistingPage(site, str) && str.length() <= 500){
+            if(newPage(str) != null){
+                ParsingPage task = new ParsingPage(parsingPageService, //listSet, parsingPageService,
+                        site, str, connectConfig);
+                tasks.add(task);
+                task.fork();
             }
+
+//            if (listSet.add(str)) {
+//                if(str.length() <= 500) {
+//                    tasks.add(new ParsingPage(listSet, parsingPageService,
+//                            site, str, connectConfig));
+//                }
+//            }
         }
-        invokeAll(tasks);
+//        invokeAll(tasks);
         for (ParsingPage pp : tasks){
             pp.join();
         }
     }
 
-    public int getListSet(){
-        return listSet.size();
+    private Page newPage(String str){
+        if(!parsingPageService.isExistingPage(site, str) && str.length() <= 500){
+            Page page = new Page(site, url);
+            page.setCode(0);
+            page.setContent("");
+            return parsingPageService.savePage(page);
+        }
+        return null;
     }
-    private Page savePage(){
+//    public int getListSet(){
+//        return listSet.size();
+//    }
+    private Page savePage(Page page){
+        if(page == null) {
+            return null;
+        }
         Connection con = getConnect();
         Document doc = null;
         int statusCode = 200;
@@ -125,7 +135,7 @@ public class ParsingPage extends RecursiveAction {
                 return null;
             }
         }
-        Page page = new Page(site, url);
+//        Page page = new Page(site, url);
         page.setCode(statusCode);
         if(statusCode != 200){
             page.setContent("");
