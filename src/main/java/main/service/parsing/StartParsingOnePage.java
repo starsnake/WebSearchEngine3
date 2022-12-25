@@ -1,10 +1,13 @@
 package main.service.parsing;
 
 import main.config.ConnectConfig;
+import main.model.Page;
 import main.model.Site;
 import main.model.TypeSiteIndexingStatus;
 import main.service.IParsingPageService;
+import main.tools.Tools;
 
+import java.util.Date;
 import java.util.concurrent.ForkJoinPool;
 
 public class StartParsingOnePage implements Runnable{
@@ -22,21 +25,15 @@ public class StartParsingOnePage implements Runnable{
 
     @Override
     public void run() {
+        long start = System.currentTimeMillis();
+        System.out.println("Start parsing sites " + new Date());
         parsingPageService.deleteOnePage(site, siteUrl);
-        if(site == null){
-            return;
-        }
-//        Site newSite = new Site(siteUrl, site.getName());
-//        parsingPageService.deleteSite(site);
-//        newSite.setStatus(TypeSiteIndexingStatus.INDEXING);
-//        newSite = parsingPageService.saveSite(newSite);
-//
-//        ParsingPage parsingPage = new ParsingPage(parsingPageService, newSite, connectConfig);
-//        new ForkJoinPool().invoke(parsingPage);
-//
-//        if(!parsingPageService.isSiteFailed(site)) {
-//            newSite.setStatus(TypeSiteIndexingStatus.INDEXED);
-//            parsingPageService.saveSite(newSite);
-//        }
+        System.out.println("Duration of deleting: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
+        start = System.currentTimeMillis();
+        Page page = parsingPageService.newPage(siteUrl, site);
+        ParsingPage parsingPage = new ParsingPage(parsingPageService, page, connectConfig);
+        new ForkJoinPool().invoke(parsingPage);
+        System.out.println("Duration of processing site " + site.getUrl() + ": " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
+        System.out.println("Links - " + parsingPageService.countPageBySite(site));
     }
 }

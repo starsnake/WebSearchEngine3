@@ -23,7 +23,7 @@ public class Lemma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name = "fk_lemma_site_id"), nullable = false, referencedColumnName = "id") //, nullable = false)
     private Site site;

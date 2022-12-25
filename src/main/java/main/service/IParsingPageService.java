@@ -46,5 +46,6 @@ public interface IParsingPageService {
                             int limit,
                             int offset);
     Page findPageByPathAndSite(String url, Site site);
+    Page newPage(String url, Site site);
 
 }

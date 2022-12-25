@@ -86,8 +86,8 @@ public class ParsingPageService implements IParsingPageService{
     @Transactional
     public synchronized void deleteOnePage(Site site, String siteUrl) {
         if(isExistingPage(site, siteUrl)){
-            Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(siteUrl, site);
-            List<Index> indexies = indexRepository.findByPage(pageOptional.get());
+            Page page = pageRepository.findPageByPathAndSite(siteUrl, site);
+            List<Index> indexies = indexRepository.findByPage(page);
             for(Index index : indexies){
 //                index = indexRepository.getById(index.getId());
                 if(index.getLemma().getFrequency() == 1){
@@ -98,7 +98,7 @@ public class ParsingPageService implements IParsingPageService{
                     lemmaRepository.save(index.getLemma());
                 }
             }
-            pageRepository.delete(pageOptional.get());
+            pageRepository.delete(page);
         }
     }
 
@@ -117,17 +117,13 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public boolean isExistingPage(Site site, String url){
-        Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
-        return pageOptional.isPresent();
+        Page page = pageRepository.findPageByPathAndSite(url, site);
+        return page != null && page.getId() > 0;
     }
 
     @Override
     public Page findPageByPathAndSite(String url, Site site) {
-        Optional<Page> pageOptional = pageRepository.findPageByPathAndSite(url, site);
-        if(pageOptional.isPresent()){
-            return pageOptional.get();
-        }
-        return null;
+        return pageRepository.findPageByPathAndSite(url, site);
     }
 
     @Override
@@ -150,19 +146,7 @@ public class ParsingPageService implements IParsingPageService{
     @Override
     //@Transactional
     public void deleteAllSites() {
-
-//        long start = System.currentTimeMillis();
-//        indexRepository.deleteAllInBatch();
-//        System.out.println("Duration of deleting Index: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
-//        start = System.currentTimeMillis();
-//        pageRepository.deleteAllInBatch();
-//        System.out.println("Duration of deleting Page: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
-//        start = System.currentTimeMillis();
-//        lemmaRepository.deleteAllInBatch();
-//        System.out.println("Duration of deleting lemma: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
-//        start = System.currentTimeMillis();
         siteRepository.deleteAllInBatch();
-//        System.out.println("Duration of deleting Site: " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
     }
 
     @Override
@@ -196,12 +180,21 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
 //    @Transactional
-//    public Page savePage(Page page){
-//            return pageRepository.save(page);
-//    }
-    public synchronized Page savePage(Page page){
-        if(!isExistingPage(page.getSite(), page.getPath())){
+    public Page savePage(Page page){
             return pageRepository.save(page);
+    }
+//    public Page savePage(Page page){
+//        if(!isExistingPage(page.getSite(), page.getPath())){
+//            return pageRepository.save(page);
+//        }
+//        return null;
+//    }
+
+    @Override
+    public synchronized Page newPage(String url, Site site) {
+        if(!isExistingPage(site, url) && url.length() <= 500){
+            Page page = new Page(site, url);
+            return savePage(page);
         }
         return null;
     }

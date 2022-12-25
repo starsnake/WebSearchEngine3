@@ -23,15 +23,15 @@ public interface SearchRepository extends JpaRepository<Search, Integer> {
 //    HAVING count(`index`.page_id)=3
 //    order by Sum_rank DESC;
 
-    @Query(value = "SELECT i.page_id AS id, sum(i.`rank`) AS sum_rank " +
-            "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+    @Query(value = "SELECT i.page_id AS id, sum(i.rank) AS sum_rank " +
+            "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
             "WHERE l.lemma In (:lemmaList) " +
             "GROUP BY i.page_id " +
             "HAVING count(i.page_id) = :countPage " +
             "order by Sum_rank DESC " +
             "limit :limit offset :offset",
             countQuery = "SELECT count(i.page_id) " +
-            "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+            "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
             "WHERE l.lemma In (:lemmaList) " +
             "GROUP BY i.page_id " +
             "HAVING count(i.page_id) = :countPage", nativeQuery = true)
@@ -40,15 +40,15 @@ public interface SearchRepository extends JpaRepository<Search, Integer> {
                             @Param("limit") int limit,
                             @Param("offset") int offset);
 
-    @Query(value = "SELECT i.page_id AS id, sum(i.`rank`) AS sum_rank " +
-            "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+    @Query(value = "SELECT i.page_id AS id, sum(i.rank) AS sum_rank " +
+            "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
             "WHERE l.lemma In (:lemmaList) AND l.site_id = :site " +
             "GROUP BY i.page_id " +
             "HAVING count(i.page_id) = :countPage " +
             "order by Sum_rank DESC " +
             "limit :limit offset :offset",
             countQuery = "SELECT count(i.page_id) " +
-                    "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+                    "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
                     "WHERE l.lemma In (:lemmaList) " +
                     "GROUP BY i.page_id " +
                     "HAVING count(i.page_id) = :countPage", nativeQuery = true)
@@ -60,7 +60,7 @@ public interface SearchRepository extends JpaRepository<Search, Integer> {
 
     @Query(value = "SELECT count(c.page_id) FROM (" +
                     "SELECT i.page_id " +
-                    "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+                    "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
                     "WHERE l.lemma In (:lemmaList) " +
                     "GROUP BY i.page_id " +
                     "HAVING count(i.page_id) = :countPage) c", nativeQuery = true)
@@ -69,7 +69,7 @@ public interface SearchRepository extends JpaRepository<Search, Integer> {
 
     @Query(value = "SELECT count(c.page_id) FROM (" +
             "SELECT i.page_id " +
-            "FROM lemma l JOIN `index` i ON l.id = i.lemma_id " +
+            "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
             "WHERE l.lemma In (:lemmaList) AND l.site_id = :site " +
             "GROUP BY i.page_id " +
             "HAVING count(i.page_id) = :countPage) c", nativeQuery = true)

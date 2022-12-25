@@ -1,6 +1,7 @@
 package main.service.parsing;
 
 import main.config.ConnectConfig;
+import main.model.Page;
 import main.model.Site;
 import main.model.TypeSiteIndexingStatus;
 import main.service.IParsingPageService;
@@ -27,7 +28,9 @@ public class StartParsing implements Runnable {
         parsingPageService.createSitesFromConfig();
         for (Site site : parsingPageService.getAllSites()) {
             start = System.currentTimeMillis();
-            ParsingPage parsingPage = new ParsingPage(parsingPageService, site, "/", connectConfig);
+            Page page = parsingPageService.newPage("/", site);
+            ParsingPage parsingPage = new ParsingPage(parsingPageService, page, connectConfig);
+//            ParsingPage parsingPage = new ParsingPage(parsingPageService, site, "/", connectConfig);
             new ForkJoinPool().invoke(parsingPage);
             System.out.println("Duration of processing site " + site.getUrl() + ": " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
             System.out.println("Links - " + parsingPageService.countPageBySite(site)); // + parsingPage.getListSet());

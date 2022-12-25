@@ -27,13 +27,17 @@ public class ParsingPage extends RecursiveAction {
 
     public ParsingPage(//ConcurrentSkipListSet<String> listSet,
                        IParsingPageService parsingPageService,
-                       Site site, String url,
+                       Page page,
+//                       Site site, String url,
                        ConnectConfig connectConfig) {
 //        this.listSet = listSet;
+        if(ParsingPage.listField == null) {
+            ParsingPage.listField = parsingPageService.getAllFields();
+        }
         this.parsingPageService = parsingPageService;
         this.connectConfig = connectConfig;
-        this.site = site;
-        this.url = url;
+        this.site = page.getSite();
+        this.url = page.getPath();
     }
 
 //    public ParsingPage(IParsingPageService parsingPageService,
@@ -75,9 +79,10 @@ public class ParsingPage extends RecursiveAction {
             }
             str = str.replaceFirst(site.getUrl(), "");
 //            if(!parsingPageService.isExistingPage(site, str) && str.length() <= 500){
-            if(newPage(str) != null){
-                ParsingPage task = new ParsingPage(parsingPageService, //listSet, parsingPageService,
-                        site, str, connectConfig);
+            Page nPage = parsingPageService.newPage(str, site);
+            if(nPage != null){
+                ParsingPage task = new ParsingPage(parsingPageService, //listSet, parsingPageService, site, str
+                        nPage, connectConfig);
                 tasks.add(task);
                 task.fork();
             }
@@ -95,15 +100,6 @@ public class ParsingPage extends RecursiveAction {
         }
     }
 
-    private Page newPage(String str){
-        if(!parsingPageService.isExistingPage(site, str) && str.length() <= 500){
-            Page page = new Page(site, url);
-            page.setCode(0);
-            page.setContent("");
-            return parsingPageService.savePage(page);
-        }
-        return null;
-    }
 //    public int getListSet(){
 //        return listSet.size();
 //    }

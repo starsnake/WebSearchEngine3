@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface PageRepository extends JpaRepository<Page, Integer> {
-    Optional<Page> findPageByPathAndSite(String url, Site site);
+    Page findPageByPathAndSite(String url, Site site);
     long countBySite(Site site);
     void deleteBySite(Site site);
 

@@ -24,7 +24,7 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) //, cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name = "fk_page_site_id"), referencedColumnName = "id", nullable = false)
     private Site site;
@@ -54,5 +54,7 @@ public class Page {
     public Page(Site site, String path) {
         this.site = site;
         this.path = path;
+        this.code = 0;
+        this.content = "";
     }
 }
