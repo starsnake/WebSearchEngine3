@@ -85,7 +85,7 @@ public class RuMorphology {
                 continue;
             }
             if(isContain(luceneMorph.getMorphInfo(str).get(0))){
-                String world = luceneMorph.getMorphInfo(str).get(0);
+                String world = luceneMorph.getNormalForms(str).get(0);
                 for(Lemma lemma : lemmaList){
                     if(lemma.getLemma().equals(world)) {
                         retQuery.append((retQuery.length() == 0) ? str : " " + str);

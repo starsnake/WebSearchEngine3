@@ -214,7 +214,8 @@ public class ParsingPageService implements IParsingPageService{
     @Override
     public List<Lemma> getLemma(String siteUrl, List<String> lemmas) {
         if(siteUrl.equals("")){
-            return lemmaRepository.findByLemmaInOrderByFrequency(lemmas);
+            List<Lemma> lemmaList = lemmaRepository.findByLemmaInOrderByFrequency(lemmas);
+            return lemmaList;
         }
         else {
             Site site = siteRepository.findByUrl(siteUrl);

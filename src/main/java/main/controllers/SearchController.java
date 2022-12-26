@@ -35,12 +35,12 @@ public class SearchController {
             System.out.println("По запросу " + query + " ничего не найдено. Скорректированный запрос: "
                     + RuMorphology.getCorrectQuery(query, lemmaList)); // Отобразить уточненный запрос
         }
-        List<String> list = new ArrayList<>();
+        Set<String> lemmas = new HashSet<>();
         for(Lemma lemma : lemmaList){
-            list.add(lemma.getLemma());
+            lemmas.add(lemma.getLemma());
         }
+        List<String> list = lemmas.stream().toList();
         long start = System.currentTimeMillis();
-
         List<Search> searchList =parsingPageService.searchPage(list, list.size(), siteUrl, limit, offset);
         System.out.println(System.currentTimeMillis() - start);
         SearchResult searchResult = new SearchResult(parsingPageService.countSearchPage(list, list.size(), siteUrl));
@@ -58,5 +58,5 @@ public class SearchController {
         }
         return ResponseEntity.ok().body(searchResult);
     }
-
+//    HashMap<String,>
 }

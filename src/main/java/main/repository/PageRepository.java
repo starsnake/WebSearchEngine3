@@ -26,8 +26,8 @@ public interface PageRepository extends JpaRepository<Page, Integer> {
 //    HAVING count(page.id)=3
 //    order by Sum_rank DESC;
 //SELECT page.id, sum(index.rank) AS sum_rank FROM page JOIN lemma JOIN index ON lemma.id = index.lemma_id ON page.id = index.page_id WHERE lemma.lemma In (?1) GROUP BY page.id HAVING count(page.id)=?2 order by Sum_rank DESC
-    @Query(value = "SELECT p.id, sum(i.`rank`) AS sum_rank " +
-            "FROM page p JOIN lemma l JOIN `index` i ON l.id = i.lemma_id ON p.id = i.page_id " +
+    @Query(value = "SELECT p.id, sum(i.rank) AS sum_rank " +
+            "FROM page p JOIN lemma l JOIN index i ON l.id = i.lemma_id ON p.id = i.page_id " +
             "WHERE l.lemma In (:lemmaList) " +
             "GROUP BY p.id " +
             "HAVING count(p.id)= :countPage) " +
