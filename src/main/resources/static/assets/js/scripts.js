@@ -1365,6 +1365,7 @@ var form = function(){
         }
     };
 };
+
 form().init();
 
 var menu = function(){
@@ -1503,6 +1504,9 @@ var API = function(){
             address: '/indexPage',
             type: 'POST',
             action: function(result, $this){
+            alert(result.result);
+            alert($this.next('.API-success').length);
+            alert($this.next('.API-error').length);
                 if (result.result){
                     if ($this.next('.API-error').length) {
                         $this.next('.API-error').remove();

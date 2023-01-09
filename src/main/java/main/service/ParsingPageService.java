@@ -213,14 +213,16 @@ public class ParsingPageService implements IParsingPageService{
 
     @Override
     public List<Lemma> getLemma(String siteUrl, List<String> lemmas) {
+        List<Lemma> lemmaList = new ArrayList<>();
         if(siteUrl.equals("")){
-            List<Lemma> lemmaList = lemmaRepository.findByLemmaInOrderByFrequency(lemmas);
-            return lemmaList;
+            lemmaList = lemmaRepository.findByLemmaInOrderByFrequency(lemmas);
         }
         else {
             Site site = siteRepository.findByUrl(siteUrl);
-            return lemmaRepository.findBySiteAndLemmaInOrderByFrequency(site, lemmas);
+            lemmaList = lemmaRepository.findBySiteAndLemmaInOrderByFrequency(site, lemmas);
         }
+
+        return lemmaList;
     }
 
 //    SELECT page.id, count(page.id) AS count_id, sum(`index`.rank) AS sum_rank, sum(lemma.frequency) AS sum_frequency

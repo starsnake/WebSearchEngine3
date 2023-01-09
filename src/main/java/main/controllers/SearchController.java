@@ -31,10 +31,10 @@ public class SearchController {
         List<String> cntLems = RuMorphology.getsearchLem(query);
         List<Lemma> lemmaList = parsingPageService.getLemma(siteUrl, cntLems);
         //Проверяем количество лем в запросе с количеством найденных лем в базе
-        if(cntLems.size() != lemmaList.size()){
-            System.out.println("По запросу " + query + " ничего не найдено. Скорректированный запрос: "
-                    + RuMorphology.getCorrectQuery(query, lemmaList)); // Отобразить уточненный запрос
-        }
+//        if(cntLems.size() != lemmaList.size()){
+//            System.out.println("По запросу " + query + " ничего не найдено. Скорректированный запрос: "
+//                    + RuMorphology.getCorrectQuery(query, lemmaList)); // Отобразить уточненный запрос
+//        }
         Set<String> lemmas = new HashSet<>();
         for(Lemma lemma : lemmaList){
             lemmas.add(lemma.getLemma());
@@ -42,7 +42,7 @@ public class SearchController {
         List<String> list = lemmas.stream().toList();
         long start = System.currentTimeMillis();
         List<Search> searchList =parsingPageService.searchPage(list, list.size(), siteUrl, limit, offset);
-        System.out.println(System.currentTimeMillis() - start);
+//        System.out.println(System.currentTimeMillis() - start);
         SearchResult searchResult = new SearchResult(parsingPageService.countSearchPage(list, list.size(), siteUrl));
         for(Search search : searchList){
             Page page = parsingPageService.getPageById(search.getId());

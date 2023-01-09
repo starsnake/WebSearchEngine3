@@ -59,11 +59,11 @@ public interface SearchRepository extends JpaRepository<Search, Integer> {
                             @Param("offset") int offset);
 
     @Query(value = "SELECT count(c.page_id) FROM (" +
-                    "SELECT i.page_id " +
-                    "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
-                    "WHERE l.lemma In (:lemmaList) " +
-                    "GROUP BY i.page_id " +
-                    "HAVING count(i.page_id) = :countPage) c", nativeQuery = true)
+                   "SELECT i.page_id " +
+                   "FROM lemma l JOIN index i ON l.id = i.lemma_id " +
+                   "WHERE l.lemma In (:lemmaList) " +
+                   "GROUP BY i.page_id " +
+                   "HAVING count(i.page_id) = :countPage) c", nativeQuery = true)
     int countSearchPage(@Param("lemmaList") List<String> lemmaList,
                             @Param("countPage") int countLemma);
 
