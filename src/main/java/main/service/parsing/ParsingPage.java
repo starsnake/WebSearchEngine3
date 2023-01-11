@@ -18,19 +18,15 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ParsingPage extends RecursiveAction {
-//    private final ConcurrentSkipListSet<String> listSet;
     private final ConnectConfig connectConfig;
     private final IParsingPageService parsingPageService;
     private final Site site;
     private final String url;
     private static HashMap<String, Float> listField;
 
-    public ParsingPage(//ConcurrentSkipListSet<String> listSet,
-                       IParsingPageService parsingPageService,
+    public ParsingPage(IParsingPageService parsingPageService,
                        Page page,
-//                       Site site, String url,
                        ConnectConfig connectConfig) {
-//        this.listSet = listSet;
         if(ParsingPage.listField == null) {
             ParsingPage.listField = parsingPageService.getAllFields();
         }
@@ -39,18 +35,6 @@ public class ParsingPage extends RecursiveAction {
         this.site = page.getSite();
         this.url = page.getPath();
     }
-
-//    public ParsingPage(IParsingPageService parsingPageService,
-//                       Site site,
-//                       ConnectConfig connectConfig) {
-//        this.parsingPageService = parsingPageService;
-//        this.connectConfig = connectConfig;
-//        ParsingPage.listField = parsingPageService.getAllFields();
-//        this.url = "/";
-//        this.site = site;
-//        this.listSet = new ConcurrentSkipListSet<>();
-//        listSet.add("/");
-//    }
 
     @Override
     protected void compute() {
@@ -86,23 +70,12 @@ public class ParsingPage extends RecursiveAction {
                 tasks.add(task);
                 task.fork();
             }
-
-//            if (listSet.add(str)) {
-//                if(str.length() <= 500) {
-//                    tasks.add(new ParsingPage(listSet, parsingPageService,
-//                            site, str, connectConfig));
-//                }
-//            }
         }
-//        invokeAll(tasks);
         for (ParsingPage pp : tasks){
             pp.join();
         }
     }
 
-//    public int getListSet(){
-//        return listSet.size();
-//    }
     private Page savePage(Page page){
         if(page == null) {
             return null;

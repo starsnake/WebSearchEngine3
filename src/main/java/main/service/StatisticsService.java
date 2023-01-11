@@ -1,12 +1,10 @@
 package main.service;
 
 import main.model.Site;
-import main.model.statistics.Detailed;
 import main.model.statistics.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

@@ -3,7 +3,6 @@ package main.service.parsing;
 import main.config.ConnectConfig;
 import main.model.Page;
 import main.model.Site;
-import main.model.TypeSiteIndexingStatus;
 import main.service.IParsingPageService;
 import main.tools.Tools;
 

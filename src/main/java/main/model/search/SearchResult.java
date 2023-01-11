@@ -1,7 +1,5 @@
 package main.model.search;
 
-import lombok.Getter;
-import lombok.Setter;
 import main.response.Response;
 
 import java.util.ArrayList;

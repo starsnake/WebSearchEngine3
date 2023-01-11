@@ -30,7 +30,6 @@ public class StartParsing implements Runnable {
             start = System.currentTimeMillis();
             Page page = parsingPageService.newPage("/", site);
             ParsingPage parsingPage = new ParsingPage(parsingPageService, page, connectConfig);
-//            ParsingPage parsingPage = new ParsingPage(parsingPageService, site, "/", connectConfig);
             new ForkJoinPool().invoke(parsingPage);
             System.out.println("Duration of processing site " + site.getUrl() + ": " + Tools.getTime((System.currentTimeMillis() - start) / 1000));
             System.out.println("Links - " + parsingPageService.countPageBySite(site)); // + parsingPage.getListSet());

@@ -58,5 +58,4 @@ public class SearchController {
         }
         return ResponseEntity.ok().body(searchResult);
     }
-//    HashMap<String,>
 }

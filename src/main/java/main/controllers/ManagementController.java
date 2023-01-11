@@ -2,7 +2,6 @@ package main.controllers;
 
 import main.config.ConnectConfig;
 import main.model.Site;
-import main.model.TypeSiteIndexingStatus;
 import main.config.SiteConfig;
 import main.response.Response;
 import main.response.ResponseFalse;
@@ -10,20 +9,14 @@ import main.response.ResponseTrue;
 import main.service.*;
 import main.service.parsing.StartParsing;
 import main.service.parsing.StartParsingOnePage;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 @Controller
 public class ManagementController {
@@ -74,7 +67,8 @@ public class ManagementController {
                 return ResponseEntity.ok().body(new ResponseTrue());
             }
         }
-        return ResponseEntity.badRequest().body(new ResponseFalse("Данная страница находится за пределами сайтов, указаных в конфигурационном файле."));
+        return ResponseEntity.badRequest()
+                .body(new ResponseFalse("Данная страница находится за пределами сайтов, указаных в конфигурационном файле."));
     }
 
 }

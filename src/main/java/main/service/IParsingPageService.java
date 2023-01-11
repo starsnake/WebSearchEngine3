@@ -12,7 +12,6 @@ public interface IParsingPageService {
     long countLemma();
     long countPageBySite(Site site);
     long countLemmaBySite(Site site);
-
     HashMap<String, Float> getAllFields();
     boolean isExistingPage(Site site, String url);
     boolean isIndexing();

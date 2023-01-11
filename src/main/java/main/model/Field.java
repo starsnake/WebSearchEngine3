@@ -3,13 +3,6 @@ package main.model;
 import lombok.*;
 import javax.persistence.*;
 
-//        statement.execute("CREATE TABLE fields(" +
-//                "id INT NOT NULL AUTO_INCREMENT, " +
-//                "name VARCHAR(255) NOT NULL, " +
-//                "selector VARCHAR(255) NOT NULL, " +
-//                "weight FLOAT NOT NULL, " +
-//                "PRIMARY KEY(id))");
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
